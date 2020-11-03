@@ -5,9 +5,10 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import TextField from '@material-ui/core/TextField';
 
-async function fetchData() {
-  const response = await fetch('http://localhost:8080/photos_public');
+async function fetchData(tags) {
+  const response = await fetch('http://localhost:8080/photos_public?tags='+tags);
 
   if (!response.ok) {
     const message = `An error has occured: ${response.status}`;
@@ -17,17 +18,18 @@ async function fetchData() {
   const photos = await response.json();
   return photos;
 }
+
+
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {photos: [], title: "Photos"};
+    this.state = {photos: [], title: "Photos", tags: ""};
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
-
-
-  componentDidMount(){
-    fetchData().then(photos => {
-      console.log(photos);
+  handlePhotos(){
+    fetchData(this.state.tags).then(photos => {
       if(photos && photos.items){
         this.setState({
           photos: photos.items,
@@ -35,12 +37,35 @@ class App extends React.Component {
         });
       }
     });
+  }
 
+  componentDidMount(){
+    this.handlePhotos();
+    this.timerID = setInterval(
+      () => this.handlePhotos(),
+      10000
+    );
+  }
+
+  handleChange(event) {
+    this.setState({tags: event.target.value});
+  }
+
+  handleSearch(event){
+    this.handlePhotos();
+    event.preventDefault();
   }
 
   componentWillUnmount() {
+    this.setState({
+      photos: [],
+      title: "",
+      tags: ""
+    });
+    clearInterval(this.timerID);
   }
   
+
   render() {
     return <div className="App-header">
     <Container maxWidth="sm">
@@ -49,7 +74,10 @@ class App extends React.Component {
         <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
           <Typography variant="h4" component="h1" gutterBottom>
           {this.state.title}
-          </Typography>        
+          </Typography>
+          <form onSubmit={this.handleSearch}>
+            <TextField id="tags" value={this.state.tags} onChange={this.handleChange} label="Search image by tags" variant="outlined"/>        
+          </form>
         </GridListTile>
         {this.state.photos.map((tile, index) => (
           <GridListTile key={index}>
