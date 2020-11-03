@@ -1,6 +1,10 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
 
 async function fetchData() {
   const response = await fetch('http://localhost:8080/photos_public');
@@ -16,7 +20,7 @@ async function fetchData() {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {photos: []};
+    this.state = {photos: [], title: "Photos"};
   }
 
 
@@ -25,39 +29,43 @@ class App extends React.Component {
     fetchData().then(photos => {
       console.log(photos);
       if(photos && photos.items){
-        const list = photos.items.map((item, index) =>
-
-          <li key={index}>{item.title}
-            <img src={item.media.m} alt={item.title}></img>
-          </li>
-        );
         this.setState({
-          photos: list
+          photos: photos.items,
+          title: photos.title
         });
       }
     });
+
   }
 
   componentWillUnmount() {
   }
+  
   render() {
-    return <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React {this.state.tes}
-        </a>
-        <ul>{this.state.photos}</ul>
-      </header>
+    return <div className="App-header">
+    <Container maxWidth="sm">
+  
+      <GridList cellHeight={180}>
+        <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+          {this.state.title}
+          </Typography>        
+        </GridListTile>
+        {this.state.photos.map((tile, index) => (
+          <GridListTile key={index}>
+            <img src={tile.media.m} alt={tile.title} />
+            <GridListTileBar
+              title={tile.title}
+              subtitle={<span>by: {tile.author}</span>}
+        
+            />
+          </GridListTile>
+        ))}
+      </GridList>
+      </Container>
     </div>
+       
   }
 }
+
 export default App;
