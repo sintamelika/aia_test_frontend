@@ -8,7 +8,9 @@ import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 
 async function fetchData(tags) {
-  const response = await fetch('http://localhost:8080/photos_public?tags='+tags);
+  let api_server = "https://young-waters-17562.herokuapp.com/";
+  // let api_server = "http://localhost:8080/";
+  const response = await fetch(api_server+'photos_public?tags='+tags);
 
   if (!response.ok) {
     const message = `An error has occured: ${response.status}`;
