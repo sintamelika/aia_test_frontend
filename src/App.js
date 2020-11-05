@@ -1,11 +1,13 @@
 import React from 'react';
 import './App.css';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
+
+import Grid from '@material-ui/core/Grid';
+import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
 
 async function fetchData(tags) {
   let api_server = "https://young-waters-17562.herokuapp.com/";
@@ -70,29 +72,55 @@ class App extends React.Component {
 
   render() {
     return <div className="App-header">
-    <Container maxWidth="sm">
-  
-      <GridList cellHeight={180}>
-        <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
-          <Typography variant="h4" component="h1" gutterBottom>
-          {this.state.title}
-          </Typography>
-          <form onSubmit={this.handleSearch}>
-            <TextField id="tags" value={this.state.tags} onChange={this.handleChange} label="Search image by tags" variant="outlined"/>        
-          </form>
-        </GridListTile>
-        {this.state.photos.map((tile, index) => (
-          <GridListTile key={index}>
-            <img src={tile.media.m} alt={tile.title} />
-            <GridListTileBar
-              title={tile.title}
-              subtitle={<span>by: {tile.author}</span>}
-        
-            />
-          </GridListTile>
-        ))}
-      </GridList>
-      </Container>
+    <main className="MuiContainer-root">
+       
+        <div>
+          <Container maxWidth="sm">
+            <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
+              AIA Test
+            </Typography>
+            <Typography variant="h5" align="center" color="textSecondary" paragraph>
+              
+              {this.state.title}
+            </Typography>
+            <center>
+              <form onSubmit={this.handleSearch}>
+                <TextField id="tags" value={this.state.tags} onChange={this.handleChange} label="Search image by tags" variant="outlined"/>        
+              </form>
+            </center>
+          </Container>
+        </div>
+        <Container className="cardGrid" maxWidth="md">
+          {/* End hero unit */}
+          <Grid container spacing={4}>
+            {this.state.photos.map((tile, index) => (
+              <Grid item key={index} xs={12} sm={6} md={4}>
+                <Card className="card">
+                  <CardMedia
+                    component="img"
+                    className="cardMedia"
+                    image={tile.media.m}
+                    title={tile.title}
+                  />
+                  <CardContent className="cardContent">
+                    <Typography gutterBottom variant="h5" component="h2">
+                      {tile.title}
+                    </Typography>
+                    <Typography>
+                      by {tile.author}
+                    </Typography>
+                    <Typography>
+                      <a href={tile.link} target="_blank" rel="noreferrer">View</a>
+                    </Typography>
+                  </CardContent>
+                  
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </main>
+
     </div>
        
   }
