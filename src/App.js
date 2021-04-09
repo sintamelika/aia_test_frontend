@@ -77,7 +77,7 @@ class App extends React.Component {
         <div>
           <Container maxWidth="sm">
             <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-              AIA Test
+              Flickr Test
             </Typography>
             <Typography variant="h5" align="center" color="textSecondary" paragraph>
               
